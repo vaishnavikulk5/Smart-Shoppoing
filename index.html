@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <title>Smart Grocery Shopping Assistant</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f9;
+      color: #333;
+      display: flex;
+    }
+    .profile-icon {
+      position: absolute;
+      top: 20px;
+      right: 20px; /* Positions it in the top-right corner */
+      background-color: #0078D7;
+      color: white;
+      border-radius: 50%;
+      padding: 15px;
+      font-size: 24px;
+      cursor: pointer;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .profile-icon:hover {
+      background-color: #005BB5;
+    }
+
+    .sidebar {
+      width: 60px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 10px 0;
+    }
+
+    .sidebar button {
+      background: none;
+      border: none;
+      color: white;
+      margin: 10px 0;
+      cursor: pointer;
+      font-size: 30px;
+    }
+
+    .sidebar button:hover {
+      color: #ffd700;
+    }
+
+    .container {
+      flex-grow: 1;
+      max-width: 600px;
+      margin: 20px auto;
+      padding: 20px;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      text-align: center;
+      color: #0078D7;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+
+    input[type="text"], input[type="number"] {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+
+    button {
+      background: #0078D7;
+      color: #fff;
+      border: none;
+      padding: 10px 15px;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+
+    button:hover {
+      background: #005BB5;
+    }
+
+    .shopping-list {
+      margin-top: 20px;
+    }
+
+    .shopping-list ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .shopping-list li {
+      padding: 10px;
+      background: #f9f9f9;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .total {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .categories {
+      margin-top: 20px;
+    }
+
+    .categories h3 {
+      color:#333;
+    }
+
+    .categories ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .categories li {
+      padding: 10px;
+      background: #f9f9f9;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .chatbot {
+      position: fixed;
+      bottom: 70px; 
+      right: 20px;
+      width: 300px;
+      height: 400px;
+      background-color: #fff;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      display: none;
+      flex-direction: column;
+      z-index: 1000;
+    }
+
+    .chatbot-header {
+      background-color: #0078D7;
+      color: white;
+      padding: 10px;
+      text-align: center;
+      border-radius: 8px 8px 0 0;
+    }
+
+    .chatbot-body {
+      padding: 10px;
+      overflow-y: auto;
+      flex-grow: 1;
+      max-height: 300px;
+    }
+
+    .chatbot-input {
+      padding: 10px;
+      border-top: 1px solid #ddd;
+      display: flex;
+    }
+
+    .chatbot-input input {
+      flex-grow: 1;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    .chatbot-input button {
+      background-color: #0078D7;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      cursor: pointer;
+      border-radius: 4px;
+      margin-left: 10px;
+    }
+
+    .chatbot-input button:hover {
+      background-color: #005BB5;
+    }
+
+    .chatbot-toggle {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: #0078D7;
+      color: white;
+      border: none;
+      padding: 15px;
+      border-radius: 50%;
+      font-size: 20px;
+      cursor: pointer;
+      z-index: 1001;
+    }
+
+  </style>
+</head>
+<body>
+
+    <div class="profile-icon">
+        <i class="fas fa-user"></i>
+        
+      </div>
+
+  <div class="sidebar">
+    <button title="Home">🏠</button>
+    <button title="List">📝</button>
+    <button title="Tutorial">📘</button>
+    <button title="Settings">⚙️</button>
+  </div>
+
+  <div class="container">
+    <h1>Smart Shopping Assistant</h1>
+
+    <div class="form-group">
+      <label for="item">Add Item</label>
+      <input type="text" id="item" placeholder="Enter item name" oninput="suggestItems()">
+      <ul id="suggestions" style="list-style:none; padding:0; margin-top:5px; background:#fff; border:1px solid #ccc; border-radius:4px; display:none;"></ul>
+    </div>
+
+    <div class="form-group">
+      <label for="price">Price</label>
+      <input type="number" id="price" placeholder="Enter item price">
+    </div>
+
+    <button onclick="addItem()">Add to List</button>
+
+    <div class="shopping-list">
+      <h3>Shopping List</h3>
+      <ul id="list"></ul>
+    </div>
+
+    <div class="categories">
+      <h3>Categories</h3>
+      <ul id="categorized-list"></ul>
+    </div>
+
+    <div class="total" id="total">Total: $0.00</div>
+
+    <div class="form-group">
+      <label for="budget">Set Budget</label>
+      <input type="number" id="budget" placeholder="Enter your budget">
+    </div>
+  </div>
+
+  <!-- Chatbot Container -->
+  <div class="chatbot" id="chatbot">
+    <div class="chatbot-header">
+      <h4>Chatbot</h4>
+    </div>
+    <div class="chatbot-body" id="chatbot-body">
+      <p>How can I assist you with your shopping today?</p>
+    </div>
+    <div class="chatbot-input">
+      <input type="text" id="chatbot-input" placeholder="Type your message...">
+      <button onclick="sendMessage()">Send</button>
+    </div>
+  </div>
+
+  
+  <button class="chatbot-toggle" onclick="toggleChatbot()">💬</button>
+
+  <script>
+    const list = document.getElementById('list');
+    const categorizedList = document.getElementById('categorized-list');
+    const totalDisplay = document.getElementById('total');
+    const budgetInput = document.getElementById('budget');
+    const suggestions = document.getElementById('suggestions');
+    let total = 0;
+
+    const predefinedCategories = {
+      Dairy: ['milk', 'cheese', 'butter', 'yogurt', 'paneer'],
+      Vegetables: ['carrot', 'broccoli', 'spinach', 'potato', 'tomato', 'onion'],
+      Snacks: ['chips', 'cookies', 'popcorn', 'nuts', 'chocolates']
+    };
+
+    function suggestItems() {
+      const input = document.getElementById('item').value.toLowerCase();
+      suggestions.innerHTML = '';
+      if (input) {
+        let matches = [];
+        for (const category in predefinedCategories) {
+          matches = matches.concat(
+            predefinedCategories[category].filter(item => item.startsWith(input))
+          );
+        }
+
+        if (matches.length > 0) {
+          suggestions.style.display = 'block';
+          matches.forEach(match => {
+            const suggestionItem = document.createElement('li');
+            suggestionItem.textContent = match;
+            suggestionItem.style.padding = '5px';
+            suggestionItem.style.cursor = 'pointer';
+            suggestionItem.onclick = () => {
+              document.getElementById('item').value = match;
+              suggestions.style.display = 'none';
+            };
+            suggestions.appendChild(suggestionItem);
+          });
+        } else {
+          suggestions.style.display = 'none';
+        }
+      } else {
+        suggestions.style.display = 'none';
+      }
+    }
+
+    function addItem() {
+      const item = document.getElementById('item').value;
+      const price = parseFloat(document.getElementById('price').value);
+
+      if (item === '' || isNaN(price)) {
+        alert('Please enter both item and price.');
+        return;
+      }
+
+      total += price;
+      updateTotal();
+
+      const li = document.createElement('li');
+      li.innerHTML = `${item} - $${price.toFixed(2)} <button onclick="removeItem(this, ${price})">Remove</button>`;
+      list.appendChild(li);
+
+      categorizeItem(item);
+
+      document.getElementById('item').value = '';
+      document.getElementById('price').value = '';
+      suggestions.style.display = 'none';
+    }
+
+    function categorizeItem(item) {
+      for (const category in predefinedCategories) {
+        if (predefinedCategories[category].includes(item.toLowerCase())) {
+          const categoryLi = document.createElement('li');
+          categoryLi.textContent = `${item} (${category})`;
+          categorizedList.appendChild(categoryLi);
+          return;
+        }
+      }
+
+      const categoryLi = document.createElement('li');
+      categoryLi.textContent = `${item} (Uncategorized)`;
+      categorizedList.appendChild(categoryLi);
+    }
+
+    function removeItem(button, price) {
+      const li = button.parentElement;
+      list.removeChild(li);
+      total -= price;
+      updateTotal();
+    }
+
+    function updateTotal() {
+      const budget = parseFloat(budgetInput.value);
+      totalDisplay.textContent = `Total: $${total.toFixed(2)}`;
+
+      if (!isNaN(budget) && total > budget) {
+        totalDisplay.style.color = 'red';
+      } else {
+        totalDisplay.style.color = 'black';
+      }
+    }
+
+    budgetInput.addEventListener('input', updateTotal);
+
+    // Chatbot functions
+    function toggleChatbot() {
+      const chatbot = document.getElementById('chatbot');
+      chatbot.style.display = chatbot.style.display === 'none' || chatbot.style.display === '' ? 'flex' : 'none';
+    }
+
+    function sendMessage() {
+      const input = document.getElementById('chatbot-input').value;
+      if (input.trim() === '') return;
+
+      const messageContainer = document.getElementById('chatbot-body');
+      const message = document.createElement('p');
+      message.textContent = `You: ${input}`;
+      messageContainer.appendChild(message);
+
+      setTimeout(() => {
+        const botMessage = document.createElement('p');
+        botMessage.textContent = `Bot: How can I assist you further with your shopping?`;
+        messageContainer.appendChild(botMessage);
+        messageContainer.scrollTop = messageContainer.scrollHeight; // Scroll to the latest message
+      }, 1000);
+
+      document.getElementById('chatbot-input').value = '';
+    }
+  </script>
+</body>
+</html>
